@@ -1,10 +1,10 @@
 # NotificationService - Handover Documentation
 
-This document provides a comprehensive overview of the **NotificationService**, a high-performance, event-driven notification system built using .NET 9 Clean Architecture. It is designed to handle massive scale while maintaining message idempotency and real-time delivery.
+This document provides a comprehensive overview of the **NotificationService**, a high-performance, event-driven, omni-channel notification system built using .NET 9 Clean Architecture. It is designed to handle massive scale while maintaining message idempotency and delivering messages across multiple channels (Real-time, Email, SMS).
 
 ## 🏛️ System Architecture
 
-The system follows an event-driven architecture utilizing Apache Kafka as the central nervous system.
+The system follows an event-driven architecture utilizing Apache Kafka as the central nervous system, distributing events to various notification channels via a `CompositeSender` pattern.
 
 ```mermaid
 graph TD
@@ -22,6 +22,12 @@ graph TD
     
     R -- Backplane --> API
     R -- Backplane --> API2
+    
+    API -- SMTP --> MP[(Mailpit - Local Mail Server)]
+    API2 -- SMTP --> MP
+    
+    API -- HTTP --> SMS[(SMS Gateway - Twilio/Mock)]
+    API2 -- HTTP --> SMS
 ```
 
 ### Key Components:
@@ -29,7 +35,10 @@ graph TD
 - **Idempotency (Redis)**: Ensures each `EventId` is processed exactly once, preventing duplicate notifications.
 - **Backplane (Redis)**: Synchronizes SignalR messages across multiple server instances.
 - **Persistence (PostgreSQL)**: Stores `NotificationLogs` for auditing and delivery tracking using the Repository Pattern.
-- **Delivery (SignalR)**: Pushes notifications to specific users via persistent WebSockets.
+- **Omni-Channel Delivery**:
+  - **SignalR**: Pushes notifications to specific users via persistent WebSockets.
+  - **Email (SMTP)**: Sends structured emails. Uses `Mailpit` in local environments to capture emails without real credentials.
+  - **SMS (HTTP)**: Standardized `HttpClient` template ready for providers like Twilio or Nexmo.
 
 ---
 
@@ -40,6 +49,7 @@ graph TD
 - **Messaging**: Apache Kafka (Confluent.Kafka)
 - **Caching**: Redis 7 (StackExchange.Redis)
 - **Real-time**: SignalR with Redis Backplane
+- **Email Testing**: Mailpit (SMTP Blackhole & Web UI)
 - **Containerization**: Docker & Docker Compose
 
 ---
@@ -59,7 +69,7 @@ The system is designed for **High Throughput** and **High Availability**.
 
 ---
 
-## 📡 API & Hub usage
+## 📡 API & Channel Usage
 
 ### 1. SignalR Hub (Real-time)
 - **URL**: `http://localhost:5027/hubs/notifications`
@@ -71,27 +81,42 @@ The system is designed for **High Throughput** and **High Availability**.
 - **URL**: `GET /api/logs`
 - **Description**: Returns the latest 50 processed notification entries from the database.
 
+### 3. Kafka Message Format
+When producing a message to Kafka, you can target specific channels by setting the `Channel` property (`"SignalR"`, `"Email"`, `"SMS"`, or `"All"`):
+```json
+{
+  "EventId": "unique-id-123",
+  "UserId": "user-123",
+  "Message": "Hello from Synapse!",
+  "Type": "Alert",
+  "Channel": "All" 
+}
+```
+
 ---
 
 ## 🧪 Testing & Verification
 
-### The "Mega Bomb" Test
+### The "Mega Bomb" Load Test
 To test the system's ability to handle high load (e.g., 10,000 messages), use the following PowerShell script:
 
 ```powershell
 $messages = 1..10000 | ForEach-Object {
     $uid = "u$($_ % 50)"
     $eid = "bomb-$_"
-    "${uid}:{`"EventId`":`"$eid`",`"UserId`":`"$uid`",`"Message`":`"🔥 Test Message #$_`",`"Type`":`"Alert`"}"
+    "${uid}:{`"EventId`":`"$eid`",`"UserId`":`"$uid`",`"Message`":`"🔥 Test Message #$_`",`"Type`":`"Alert`",`"Channel`":`"SignalR`"}"
 }
 $messages -join "`n" | docker exec -i notificationservice-kafka-1 kafka-console-producer --broker-list localhost:9092 --topic notifications --property "parse.key=true" --property "key.separator=:"
 ```
 
-### Verification UI
+### Verification UI (`tester.html`)
 Access `tester.html` in your browser. It includes:
 - **Dual Instance Connections**: Port 5027 and 5028.
 - **Auto-Refresh Logs**: Real-time view of PostgreSQL persistence.
 - **Performance Optimized**: UI remains responsive even during 10k message bursts.
+
+### Email Local Testing (Mailpit)
+Send a message to Kafka with `"Channel": "Email"` and open your browser to **`http://localhost:8025`**. You will see the Mailpit interface displaying the successfully intercepted email.
 
 ---
 
@@ -102,14 +127,15 @@ To move this project to a production environment, implement the following:
 1.  **Security**:
     - Replace the `QueryStringUserIdProvider` with **JWT Bearer Authentication**.
     - Implement HTTPS for all communication.
-2.  **Infrastructure**:
+2.  **External Providers**:
+    - Update `SmtpSettings` in `appsettings.json` with a real provider (e.g., SendGrid, Amazon SES) instead of Mailpit.
+    - Update `SmsSettings` with a real SMS gateway URL and API Key (e.g., Twilio).
+3.  **Infrastructure**:
     - Use a managed Kafka service (e.g., Confluent Cloud, Amazon MSK).
     - Configure PostgreSQL Replication/Backups.
-3.  **Observability**:
+4.  **Observability**:
     - Integrate **Serilog** with ELK or Seq.
     - Implement **Health Checks** (`/health`) and monitoring with Prometheus/Grafana.
-4.  **Senders**:
-    - Replace `StubSenders` with real implementations (SendGrid, Twilio, Firebase).
 
 ---
 

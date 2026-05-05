@@ -10,10 +10,13 @@ services:
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=NotificationDb;Username=postgres;Ssl Mode=Disable
       - ConnectionStrings__Redis=redis:6379
       - Kafka__BootstrapServers=kafka:29092
+      - SmtpSettings__Host=mailpit
+      - SmtpSettings__Port=1025
     depends_on:
       - postgres
       - redis
       - kafka
+      - mailpit
 
   api2:
     build:
@@ -25,10 +28,19 @@ services:
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=NotificationDb;Username=postgres;Ssl Mode=Disable
       - ConnectionStrings__Redis=redis:6379
       - Kafka__BootstrapServers=kafka:29092
+      - SmtpSettings__Host=mailpit
+      - SmtpSettings__Port=1025
     depends_on:
       - postgres
       - redis
       - kafka
+      - mailpit
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "8025:8025" # Web UI
+      - "1025:1025" # SMTP
 
   postgres:
     image: postgres:15

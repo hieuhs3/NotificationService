@@ -43,7 +43,7 @@ builder.Services.AddCors(options =>
 
 // 4. Add Senders & Domain Services
 builder.Services.AddScoped<EmailSender>();
-builder.Services.AddScoped<PushSender>();
+builder.Services.AddHttpClient<SmsSender>();
 
 // Register Composite Sender with all implementations
 builder.Services.AddScoped<INotificationSender>(sp => 
@@ -52,7 +52,7 @@ builder.Services.AddScoped<INotificationSender>(sp =>
     {
         sp.GetRequiredService<SignalRNotificationSender>(),
         sp.GetRequiredService<EmailSender>(),
-        sp.GetRequiredService<PushSender>()
+        sp.GetRequiredService<SmsSender>()
     };
     return new CompositeSender(senders);
 });

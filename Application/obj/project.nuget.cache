@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "uZIEgo/O8Ao=",
+  "dgSpecHash": "AzyDYBO1eqM=",
   "success": true,
-  "projectFilePath": "d:\\100_Synapse\\NotificationService\\Application\\NotificationService.Application.csproj",
+  "projectFilePath": "D:\\100_Synapse\\NotificationService\\Application\\NotificationService.Application.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\10.0.7\\microsoft.extensions.configuration.abstractions.10.0.7.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.2\\microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
-    "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.2\\microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512"
+    "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.2\\microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
+    "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.7\\microsoft.extensions.primitives.10.0.7.nupkg.sha512"
   ],
   "logs": []
 }

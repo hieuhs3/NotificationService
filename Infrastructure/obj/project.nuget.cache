@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "P0Nzfr0KVzE=",
+  "dgSpecHash": "L2teM+Iy1sE=",
   "success": true,
-  "projectFilePath": "d:\\100_Synapse\\NotificationService\\Infrastructure\\NotificationService.Infrastructure.csproj",
+  "projectFilePath": "D:\\100_Synapse\\NotificationService\\Infrastructure\\NotificationService.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ADMIN\\.nuget\\packages\\confluent.kafka\\2.14.0\\confluent.kafka.2.14.0.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
@@ -29,7 +29,7 @@
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\8.0.10\\microsoft.entityframeworkcore.relational.8.0.10.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\8.0.0\\microsoft.extensions.caching.abstractions.8.0.0.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.caching.memory\\8.0.1\\microsoft.extensions.caching.memory.8.0.1.nupkg.sha512",
-    "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\10.0.6\\microsoft.extensions.configuration.abstractions.10.0.6.nupkg.sha512",
+    "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\10.0.7\\microsoft.extensions.configuration.abstractions.10.0.7.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\8.0.1\\microsoft.extensions.dependencyinjection.8.0.1.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.6\\microsoft.extensions.dependencyinjection.abstractions.10.0.6.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.dependencymodel\\8.0.2\\microsoft.extensions.dependencymodel.8.0.2.nupkg.sha512",
@@ -39,7 +39,7 @@
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.logging\\8.0.1\\microsoft.extensions.logging.8.0.1.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\10.0.6\\microsoft.extensions.logging.abstractions.10.0.6.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.options\\10.0.6\\microsoft.extensions.options.10.0.6.nupkg.sha512",
-    "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.6\\microsoft.extensions.primitives.10.0.6.nupkg.sha512",
+    "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.7\\microsoft.extensions.primitives.10.0.7.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.net.stringtools\\17.6.3\\microsoft.net.stringtools.17.6.3.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\newtonsoft.json\\11.0.2\\newtonsoft.json.11.0.2.nupkg.sha512",

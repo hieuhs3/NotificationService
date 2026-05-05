@@ -33,3 +33,33 @@ The project has been split into 4 key layers as requested: `API`, `Application`,
 > [!TIP]
 > **Next Steps**
 > You can now execute `docker-compose up -d` in the `NotificationService` folder to spin up Kafka and Postgres. From there, you'll want to add EF Core migrations (`dotnet ef migrations add InitialCreate`) so the Postgres schema correctly builds.
+# Project Walkthrough - Email & SMS Integration
+
+We have successfully replaced the placeholder/stub notification senders with real, production-ready implementations for **Email** and **SMS**. The system is now truly multi-channel.
+
+## ✉️ Features Completed
+
+### 1. Real Email Dispatch (`EmailSender`)
+- Integrated `System.Net.Mail.SmtpClient` for actual email dispatch.
+- Fully driven by configuration in `appsettings.json` (`SmtpSettings`).
+
+### 2. Local Email Testing with Mailpit
+- Added **Mailpit** to `docker-compose.yml`.
+- Mailpit acts as a local "black hole" SMTP server that catches outgoing emails.
+- **How to test**: Send a Kafka message with `"Channel": "Email"` and open `http://localhost:8025` in your browser. You will see the email appear in the gorgeous Mailpit Web UI instantly, without needing a real Gmail/SendGrid password.
+
+### 3. SMS HTTP Client Template (`SmsSender`)
+- Created a robust `HttpClient` based sender for SMS.
+- Ready to be plugged into Twilio, Nexmo, or any HTTP SMS Gateway.
+- If no `ProviderUrl` is configured in `appsettings.json`, it smartly mocks the dispatch and warns you in the logs, preventing failures during local development.
+
+## 🏗️ Architectural Benefits
+- **Zero changes to core logic**: Thanks to our `CompositeSender` and Dependency Injection setup, adding these new channels required **zero changes** to the `NotificationHandler`. 
+- **Graceful Failure**: The `CompositeSender` wraps each channel dispatch in a `try-catch`, meaning if an Email fails to send (e.g. SMTP down), the SMS and SignalR messages will still be delivered successfully.
+
+## 🧪 Verification
+I injected two new Kafka events (one for Email, one for SMS) into the cluster. The logs confirmed:
+- `[EmailSender]` successfully dispatched the email to `Mailpit`.
+- `[SmsSender]` detected the empty URL and logged a graceful mock warning.
+
+You can now open `http://localhost:8025` to see the fruits of our labor!
