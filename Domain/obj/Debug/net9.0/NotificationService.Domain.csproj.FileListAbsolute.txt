@@ -1,0 +1,11 @@
+D:\100_Synapse\NotificationService\Domain\bin\Debug\net9.0\NotificationService.Domain.deps.json
+D:\100_Synapse\NotificationService\Domain\bin\Debug\net9.0\NotificationService.Domain.dll
+D:\100_Synapse\NotificationService\Domain\bin\Debug\net9.0\NotificationService.Domain.pdb
+D:\100_Synapse\NotificationService\Domain\obj\Debug\net9.0\NotificationService.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\100_Synapse\NotificationService\Domain\obj\Debug\net9.0\NotificationService.Domain.AssemblyInfoInputs.cache
+D:\100_Synapse\NotificationService\Domain\obj\Debug\net9.0\NotificationService.Domain.AssemblyInfo.cs
+D:\100_Synapse\NotificationService\Domain\obj\Debug\net9.0\NotificationService.Domain.csproj.CoreCompileInputs.cache
+D:\100_Synapse\NotificationService\Domain\obj\Debug\net9.0\NotificationService.Domain.dll
+D:\100_Synapse\NotificationService\Domain\obj\Debug\net9.0\refint\NotificationService.Domain.dll
+D:\100_Synapse\NotificationService\Domain\obj\Debug\net9.0\NotificationService.Domain.pdb
+D:\100_Synapse\NotificationService\Domain\obj\Debug\net9.0\ref\NotificationService.Domain.dll

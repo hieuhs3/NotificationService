@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignalR Notification Tester</title>
+    <!-- Use Tailwind CSS specifically for styling the UI tester fast -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white font-sans antialiased min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Client 1 -->
+        <div class="bg-gray-800 rounded-xl shadow-2xl p-6 border border-gray-700 mt-4 md:mt-0 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-400"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center"><i class="fa-solid fa-server mr-3 text-blue-400"></i>Client 1 (Port 5027)</h2>
+            <p class="text-gray-400 text-sm mb-6">Connects to Instance 1</p>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">User ID</label>
+                    <input type="text" id="userId1" value="user-123" class="w-full bg-gray-900 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+                </div>
+                
+                <button id="connectBtn1" onclick="connect(1, 5027)" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-blue-500/50 transition duration-300 flex justify-center items-center">
+                    <i class="fa-solid fa-plug mr-2"></i> Connect
+                </button>
+
+                <div class="mt-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-semibold text-gray-200">Messages</h3>
+                        <span id="status1" class="px-2 py-1 bg-red-900/50 text-red-400 text-xs rounded-full border border-red-800"><i class="fa-solid fa-circle-xmark mr-1"></i>Disconnected</span>
+                    </div>
+                    <div id="messages1" class="h-64 bg-gray-900 border border-gray-700 rounded-lg p-4 overflow-y-auto space-y-3 font-mono text-sm shadow-inner">
+                        <div class="text-gray-500 italic flex justify-center items-center h-full">No messages yet.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Client 2 -->
+        <div class="bg-gray-800 rounded-xl shadow-2xl p-6 border border-gray-700 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-400"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center"><i class="fa-solid fa-server mr-3 text-purple-400"></i>Client 2 (Port 5028)</h2>
+            <p class="text-gray-400 text-sm mb-6">Connects to Instance 2</p>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">User ID</label>
+                    <input type="text" id="userId2" value="user-456" class="w-full bg-gray-900 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition">
+                </div>
+                
+                <button id="connectBtn2" onclick="connect(2, 5028)" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-purple-500/50 transition duration-300 flex justify-center items-center">
+                    <i class="fa-solid fa-plug mr-2"></i> Connect
+                </button>
+
+                <div class="mt-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-semibold text-gray-200">Messages</h3>
+                        <span id="status2" class="px-2 py-1 bg-red-900/50 text-red-400 text-xs rounded-full border border-red-800"><i class="fa-solid fa-circle-xmark mr-1"></i>Disconnected</span>
+                    </div>
+                    <div id="messages2" class="h-64 bg-gray-900 border border-gray-700 rounded-lg p-4 overflow-y-auto space-y-3 font-mono text-sm shadow-inner">
+                        <div class="text-gray-500 italic flex justify-center items-center h-full">No messages yet.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Audit Logs Panel -->
+    <div class="w-full max-w-4xl mt-8">
+        <div class="bg-gray-800 rounded-xl shadow-2xl p-6 border border-gray-700 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-500 to-orange-400"></div>
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold flex items-center"><i class="fa-solid fa-database mr-3 text-yellow-400"></i>System Audit Logs</h2>
+                    <p class="text-gray-400 text-sm">Real-time persistence log from PostgreSQL</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center bg-gray-900 px-3 py-1.5 rounded-lg border border-gray-700">
+                        <input type="checkbox" id="autoRefresh" class="w-4 h-4 text-yellow-600 bg-gray-800 border-gray-600 rounded focus:ring-yellow-500 focus:ring-offset-gray-800">
+                        <label for="autoRefresh" class="ml-2 text-xs font-medium text-gray-300">Auto-Refresh (2s)</label>
+                    </div>
+                    <button onclick="fetchAuditLogs()" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm transition flex items-center">
+                        <i class="fa-solid fa-arrows-rotate mr-2"></i> Refresh
+                    </button>
+                    <button onclick="clearSignalRLogs()" class="bg-red-900/30 text-red-400 hover:bg-red-900/50 border border-red-800/50 px-4 py-2 rounded-lg text-sm transition">
+                        <i class="fa-solid fa-trash-can mr-2"></i> Clear UI
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto min-h-[400px]">
+                <table class="w-full text-left text-sm text-gray-300">
+                    <thead class="text-xs text-gray-400 uppercase bg-gray-900/50">
+                        <tr>
+                            <th class="px-4 py-3">Timestamp</th>
+                            <th class="px-4 py-3">Event ID</th>
+                            <th class="px-4 py-3">User</th>
+                            <th class="px-4 py-3">Status</th>
+                            <th class="px-4 py-3">Message</th>
+                        </tr>
+                    </thead>
+                    <tbody id="auditLogsBody" class="divide-y divide-gray-700">
+                        <!-- Logs will be injected here -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="logsLoading" class="hidden py-10 text-center text-gray-500 italic">
+                <i class="fa-solid fa-spinner fa-spin mr-2"></i> Fetching logs...
+            </div>
+        </div>
+    </div>
+
+    <!-- Testing Instruction Panel -->
+    <div class="fixed bottom-4 right-4 max-w-sm bg-gray-800 border border-gray-700 rounded-lg shadow-2xl p-4 transform transition-transform hover:-translate-y-1">
+        <h4 class="font-bold text-yellow-400 mb-2 truncate"><i class="fa-solid fa-terminal mr-2"></i>Load Test Info</h4>
+        <p class="text-[10px] text-gray-400 mb-2 italic">Use the command I provided to send 3000 messages.</p>
+        <div class="bg-gray-950 p-2 rounded border border-gray-700">
+             <code id="lastEventProcessed" class="text-xs text-green-400 font-mono">Last Event: None</code>
+        </div>
+    </div>
+
+    <script>
+        const connections = {};
+
+        // Auto Refresh Logic
+        setInterval(() => {
+            if (document.getElementById('autoRefresh').checked) {
+                fetchAuditLogs();
+            }
+        }, 2000);
+
+        function clearSignalRLogs() {
+            document.getElementById('messages1').innerHTML = '<div class="text-gray-500 italic flex justify-center items-center h-full">Logs cleared.</div>';
+            document.getElementById('messages2').innerHTML = '<div class="text-gray-500 italic flex justify-center items-center h-full">Logs cleared.</div>';
+        }
+
+        // Initial fetch
+        setTimeout(fetchAuditLogs, 1000);
+
+        async function fetchAuditLogs() {
+            const body = document.getElementById('auditLogsBody');
+            const loader = document.getElementById('logsLoading');
+            const lastEventLabel = document.getElementById('lastEventProcessed');
+            
+            // Only show loader if manually triggered or first time
+            if (body.innerHTML === '') loader.classList.remove('hidden');
+
+            try {
+                const response = await fetch('http://localhost:5027/api/logs');
+                const logs = await response.json();
+                
+                if (logs.length > 0) {
+                    lastEventLabel.innerText = `Last Event: ${logs[0].eventId}`;
+                }
+
+                body.innerHTML = '';
+                logs.forEach(log => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-750 transition-colors border-b border-gray-700/50';
+                    const time = new Date(log.timestamp).toLocaleString();
+                    
+                    row.innerHTML = `
+                        <td class="px-4 py-3 whitespace-nowrap text-gray-400 font-mono text-xs">${time}</td>
+                        <td class="px-4 py-3 text-blue-400 font-mono text-xs">${log.eventId}</td>
+                        <td class="px-4 py-3 font-semibold">${log.userId}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${log.status === 'Sent' ? 'bg-green-900/50 text-green-400 border border-green-800' : 'bg-red-900/50 text-red-400 border border-red-800'}">
+                                ${log.status.toUpperCase()}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 truncate max-w-xs text-gray-400" title="${log.messageBody}">${log.messageBody}</td>
+                    `;
+                    body.appendChild(row);
+                });
+            } catch (err) {
+                console.error("Failed to fetch logs:", err);
+            } finally {
+                loader.classList.add('hidden');
+            }
+        }
+
+        async function connect(clientNum, port) {
+            // ... (rest of the existing connect function)
+            const btn = document.getElementById(`connectBtn${clientNum}`);
+            const status = document.getElementById(`status${clientNum}`);
+            const userId = document.getElementById(`userId${clientNum}`).value;
+            const messagesArea = document.getElementById(`messages${clientNum}`);
+
+            if (connections[clientNum] && connections[clientNum].state === signalR.HubConnectionState.Connected) {
+                await connections[clientNum].stop();
+                updateUIState(clientNum, false);
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Connecting...`;
+            
+            // Build Connection (Using query string to pass userId without JWT)
+            const url = `http://localhost:${port}/hubs/notifications?userId=${userId}`;
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl(url)
+                .configureLogging(signalR.LogLevel.Information)
+                .withAutomaticReconnect()
+                .build();
+
+            // Setup Handler
+            connection.on("ReceiveNotification", (message) => {
+                // Prepend to UI but limit to 20 for performance during load test
+                const isFirstMessage = messagesArea.innerHTML.includes('No messages yet.');
+                if (isFirstMessage) messagesArea.innerHTML = '';
+
+                // Limit elements in SignalR box to prevent browser crash during 3000 msg test
+                if (messagesArea.children.length > 20) {
+                    messagesArea.removeChild(messagesArea.lastChild);
+                }
+
+                const time = new Date().toLocaleTimeString();
+                
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `p-3 rounded-lg border border-gray-700 transform transition-all duration-300 translate-y-4 opacity-0 ${clientNum === 1 ? 'bg-blue-900/20 border-blue-800/50 text-blue-100' : 'bg-purple-900/20 border-purple-800/50 text-purple-100'}`;
+                
+                msgDiv.innerHTML = `
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="text-xs font-bold text-gray-400">[${time}]</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${message.type === 'Alert' ? 'bg-red-900/80 text-red-200' : 'bg-green-900/80 text-green-400'}">${message.type}</span>
+                    </div>
+                    <div class="font-sans whitespace-pre-wrap">${message.message}</div>
+                `;
+                
+                messagesArea.prepend(msgDiv);
+                
+                // Micro-animation trigger
+                setTimeout(() => {
+                    msgDiv.classList.remove('translate-y-4', 'opacity-0');
+                    msgDiv.classList.add('translate-y-0', 'opacity-100');
+                }, 10);
+            });
+
+            // Status Handlers
+            connection.onreconnecting(() => {
+                status.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i>Reconnecting`;
+                status.className = "px-2 py-1 bg-yellow-900/50 text-yellow-400 text-xs rounded-full border border-yellow-800";
+            });
+
+            connection.onreconnected(() => {
+                updateUIState(clientNum, true);
+            });
+
+            connection.onclose(() => {
+                updateUIState(clientNum, false);
+            });
+
+            try {
+                await connection.start();
+                connections[clientNum] = connection;
+                updateUIState(clientNum, true);
+            } catch (err) {
+                console.error(err);
+                alert(`Connection failed to port ${port}. Is the API running?`);
+                updateUIState(clientNum, false);
+            }
+        }
+
+        function updateUIState(clientNum, isConnected) {
+            const btn = document.getElementById(`connectBtn${clientNum}`);
+            const status = document.getElementById(`status${clientNum}`);
+            const input = document.getElementById(`userId${clientNum}`);
+            
+            if (isConnected) {
+                const color = clientNum === 1 ? 'blue' : 'purple';
+                btn.innerHTML = `<i class="fa-solid fa-power-off mr-2"></i> Disconnect`;
+                btn.className = `w-full bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-red-500/50 transition duration-300 flex justify-center items-center mt-4`;
+                
+                status.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i>Connected`;
+                status.className = "px-2 py-1 bg-green-900/50 text-green-400 text-xs rounded-full border border-green-800";
+                
+                input.disabled = true;
+                input.classList.add('opacity-50');
+            } else {
+                const color = clientNum === 1 ? 'blue' : 'purple';
+                btn.innerHTML = `<i class="fa-solid fa-plug mr-2"></i> Connect`;
+                btn.className = `w-full bg-${color}-600 hover:bg-${color}-500 text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-${color}-500/50 transition duration-300 flex justify-center items-center mt-4`;
+                
+                status.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i>Disconnected`;
+                status.className = "px-2 py-1 bg-red-900/50 text-red-400 text-xs rounded-full border border-red-800";
+                
+                input.disabled = false;
+                input.classList.remove('opacity-50');
+            }
+            btn.disabled = false;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+# Task List for NotificationService Implementation
+
+- `[x]` 1. Foundation & Folder Setup
+  - `[x]` Create Solution and Clean Architecture Projects
+  - `[x]` Add common package dependencies (Kafka, Redis, EF Core PostgreSQL, SignalR)
+- `[x]` 2. Domain Layer
+  - `[x]` Define Interfaces (`IMessageBus`, `INotificationSender`)
+  - `[x]` Define Entities (`NotificationLog`)
+  - `[x]` Define Events (`NotificationEvent`)
+- `[x]` 3. Application Layer
+  - `[x]` Implement `CompositeSender`, `EmailSender`, `PushSender`
+  - `[x]` Implement core `NotificationHandler` (Idempotency logic + Sender routing)
+- `[x]` 4. Infrastructure Layer
+  - `[x]` Implement `KafkaConsumerService` (Producer/Consumer with partitioning by UserId)
+  - `[x]` Implement `IdempotencyService` using `StackExchange.Redis`
+  - `[x]` Implement `SignalRNotificationSender` and `NotificationHub`
+  - `[x]` Configure `NotificationDbContext` with EF Core for Postgres
+- `[x]` 5. API Layer & Docker
+  - `[x]` Configure `Program.cs` for DI, MassTransit/HostedService (Kafka Consumer), Redis, EF, SignalR
+  - `[x]` Write `appsettings.json` configuration
+  - `[x]` Create `docker-compose.yml` for Postgres, Kafka, Redis, and Zookeeper
+- `[x]` 6. Verification
+  - `[x]` Test Docker infrastructure spin-up (prepared)
+  - `[x]` Ensure code builds locally without errors
